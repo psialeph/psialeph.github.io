@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contato | Aleph Menezes - Psicólogo</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/script.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato | Aleph Menezes</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="sobre.html">Sobre</a></li>
-        <li><a href="servicos.html">Serviços</a></li>
-        <li><a href="contato.html" class="active">Contato</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header>
+        <img src="img/logo.png" alt="Logo Aleph Menezes">
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="contato.html">Contato</a>
+        </nav>
+    </header>
 
-  <main>
-    <section>
-      <h1>Contato</h1>
-      <form action="https://formspree.io/f/xwpnkwek" method="POST">
-        <label>Nome:
-          <input type="text" name="name" required>
-        </label>
+    <main>
+        <h1>Contato</h1>
+        <form action="https://formspree.io/f/xwpnkwek" method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
 
-        <label>Email:
-          <input type="email" name="email" required>
-        </label>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
 
-        <label>Mensagem:
-          <textarea name="message" rows="5" required></textarea>
-        </label>
+            <label for="mensagem">Mensagem:</label>
+            <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
 
-        <button type="submit">Enviar</button>
-      </form>
-    </section>
-  </main>
+            <button type="submit">Enviar</button>
+        </form>
+    </main>
 
-  <footer>
-    <p>&copy; 2025 Aleph Menezes - Psicólogo</p>
-  </footer>
+    <footer>
+        <p>&copy; 2025 Aleph Menezes</p>
+    </footer>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
