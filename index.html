@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aleph Menezes | Psicólogo CRP 10/10633 - Relacionamentos e Comunicação</title>
+    <link rel="icon" href="img/Logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -98,7 +99,7 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-        <link rel="shortcut icon" type="imagex/png" href=".img/Logo.png">
+        
         /* Hero Section */
         .hero {
             background: linear-gradient(rgba(28, 37, 65, 0.85), rgba(28, 37, 65, 0.85)), url('https://images.unsplash.com/photo-1530790359200-b1faff66758f?ixlib=rb-4.0.3') center/cover no-repeat;
@@ -479,6 +480,21 @@
             border: 1px solid #f5c6cb;
         }
         
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         /* Footer */
         footer {
             background-color: var(--primary);
@@ -701,7 +717,7 @@
                 </div>
                 <div class="studies-item">
                     <h3>Estudos em Análise do Comportamento</h3>
-                    <p>Estudos independentes e aprofundamento em Análise do Comportamento Aplicada com foco em relacionamentos e comunicação.</p>
+                    <p>Estudos independentes и aprofundamento em Análise do Comportamento Aplicada com foco em relacionamentos e comunicação.</p>
                 </div>
                 <div class="studies-item">
                     <h3>Atualização Contínua</h3>
@@ -817,12 +833,15 @@
                     </ul>
                 </div>
                 <div class="contact-form">
-                    <form id="contactForm">
-                        <input type="text" placeholder="Seu nome" required id="name">
-                        <input type="email" placeholder="Seu e-mail" required id="email">
-                        <input type="tel" placeholder="Seu telefone" id="phone">
-                        <textarea placeholder="Como posso ajudar?" required id="message"></textarea>
-                        <button type="submit" class="btn">Enviar mensagem</button>
+                    <!-- Formulário com Formspree -->
+                    <form id="contactForm" action="https://formspree.io/f/xwpnkwek" method="POST">
+                        <input type="text" name="name" placeholder="Seu nome" required id="name">
+                        <input type="email" name="email" placeholder="Seu e-mail" required id="email">
+                        <input type="tel" name="phone" placeholder="Seu telefone" id="phone">
+                        <textarea name="message" placeholder="Como posso ajudar?" required id="message"></textarea>
+                        <button type="submit" class="btn" id="submitButton">
+                            <span class="button-text">Enviar mensagem</span>
+                        </button>
                     </form>
                     <div id="formMessage" class="form-message"></div>
                 </div>
@@ -884,39 +903,69 @@
             
             emailLinks.forEach(link => {
                 const email = link.getAttribute('data-email');
-                link.setAttribute('href', 'mailto:psialephmmenezes@gmail.com);
+                link.setAttribute('href', 'mailto:' + email);
                 
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    window.top.location.href = 'mailto:'psialephmmenezes@gmail.com;
+                    window.top.location.href = 'mailto:' + email;
                 });
             });
         }
 
-        // Formulário de contato
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        // Formulário de contato com Formspree
+        const form = document.getElementById('contactForm');
+        const messageElement = document.getElementById('formMessage');
+        const submitButton = document.getElementById('submitButton');
+        const buttonText = submitButton.querySelector('.button-text');
+        
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                message: document.getElementById('message').value
-            };
+            // Mostrar estado de carregamento
+            submitButton.disabled = true;
+            buttonText.innerHTML = '<span class="loading"></span> Enviando...';
             
-            // Simulação de envio (substitua por código real de envio)
-            const messageElement = document.getElementById('formMessage');
-            messageElement.textContent = 'Mensagem enviada com sucesso! Entrarei em contato em breve.';
-            messageElement.classList.add('success');
-            messageElement.style.display = 'block';
-            
-            // Limpar formulário
-            document.getElementById('contactForm').reset();
-            
-            // Esconder mensagem após 5 segundos
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 5000);
+            try {
+                // Coletar dados do formulário
+                const formData = new FormData(form);
+                
+                // Enviar para o Formspree
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Sucesso
+                    messageElement.textContent = 'Mensagem enviada com sucesso! Entrarei em contato em breve.';
+                    messageElement.classList.remove('error');
+                    messageElement.classList.add('success');
+                    messageElement.style.display = 'block';
+                    
+                    // Limpar formulário
+                    form.reset();
+                } else {
+                    throw new Error('Falha no envio');
+                }
+            } catch (error) {
+                // Tratar erro
+                messageElement.textContent = 'Ocorreu um erro ao enviar a mensagem. Tente novamente mais tarde ou entre em contato por WhatsApp.';
+                messageElement.classList.remove('success');
+                messageElement.classList.add('error');
+                messageElement.style.display = 'block';
+            } finally {
+                // Restaurar botão
+                submitButton.disabled = false;
+                buttonText.textContent = 'Enviar mensagem';
+                
+                // Esconder mensagem após 5 segundos
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                }, 5000);
+            }
         });
 
         // Executar quando a página carregar
@@ -926,4 +975,3 @@
     </script>
 </body>
 </html>
-
